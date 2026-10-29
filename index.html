@@ -1,0 +1,1304 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MPI - Idiom & Wawancara 5W+1H</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <!-- html2pdf.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        emerald: { 500: '#10b981', 600: '#059669', 700: '#047857', 800: '#065f46', 900: '#064e3b' },
+                        gold: { 400: '#fbbf24', 500: '#f59e0b' }
+                    },
+                    fontFamily: {
+                        sans: ['Poppins', 'sans-serif'],
+                        arabic: ['Amiri', 'serif']
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        /* Custom Styles & Animations */
+        body { background: linear-gradient(135deg, #ecfdf5 0%, #d1fae5 100%); min-height: 100vh; overflow-x: hidden; }
+        .glass { background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.5); box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1); }
+        .glass-dark { background: rgba(6, 78, 59, 0.9); backdrop-filter: blur(12px); border: 1px solid rgba(16, 185, 129, 0.5); }
+        
+        .fade-in { animation: fadeIn 0.5s ease-in-out forwards; }
+        .fade-out { animation: fadeOut 0.5s ease-in-out forwards; }
+        .slide-up { animation: slideUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+        .float-anim { animation: float 3s ease-in-out infinite; }
+
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes fadeOut { from { opacity: 1; } to { opacity: 0; } }
+        @keyframes slideUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes float { 0% { transform: translateY(0px); } 50% { transform: translateY(-15px); } 100% { transform: translateY(0px); } }
+
+        .hidden-screen { display: none !important; }
+        
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 8px; height: 8px; }
+        ::-webkit-scrollbar-track { background: #f1f1f1; border-radius: 10px; }
+        ::-webkit-scrollbar-thumb { background: #10b981; border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: #059669; }
+
+        /* Print formatting */
+        @media print {
+            body * { visibility: hidden; }
+            #pdf-content, #pdf-content * { visibility: visible; }
+            #pdf-content { position: absolute; left: 0; top: 0; width: 100%; }
+        }
+    </style>
+</head>
+<body class="text-gray-800 antialiased font-sans selection:bg-emerald-300">
+
+    <!-- Global Modal Dialog (Replacement for Alert) -->
+    <div id="global-modal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/60 hidden-screen opacity-0 transition-opacity duration-300">
+        <div class="glass w-11/12 max-w-md rounded-2xl p-6 text-center transform scale-95 transition-transform duration-300" id="global-modal-content">
+            <div id="modal-icon" class="text-4xl mb-4"></div>
+            <h3 id="modal-title" class="text-xl font-bold text-emerald-800 mb-2"></h3>
+            <p id="modal-desc" class="text-sm text-gray-600 mb-6"></p>
+            <button onclick="closeModal()" class="bg-emerald-600 hover:bg-emerald-700 text-white font-semibold py-2 px-6 rounded-full shadow-lg transition transform hover:scale-105 w-full">Mengerti</button>
+        </div>
+    </div>
+
+    <!-- 1. SPLASH SCREEN -->
+    <section id="splash-screen" class="fixed inset-0 z-40 bg-emerald-700 flex flex-col items-center justify-center text-white">
+        <div class="text-7xl mb-6 float-anim text-gold-400"><i class="fas fa-book-open-reader"></i></div>
+        <h1 class="text-4xl md:text-5xl font-bold mb-2 tracking-wide">IDIOM</h1>
+        <p class="text-emerald-200 text-lg">Eksplorasi Bahasa & Wawancara</p>
+        <div class="mt-10 flex space-x-2">
+            <div class="w-3 h-3 bg-gold-400 rounded-full animate-bounce"></div>
+            <div class="w-3 h-3 bg-gold-400 rounded-full animate-bounce" style="animation-delay: 0.2s"></div>
+            <div class="w-3 h-3 bg-gold-400 rounded-full animate-bounce" style="animation-delay: 0.4s"></div>
+        </div>
+    </section>
+
+    <!-- 2. COVER SCREEN -->
+    <section id="cover-screen" class="fixed inset-0 z-30 flex flex-col items-center justify-center p-4 hidden-screen bg-[url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0MDAiIGhlaWdodD0iNDAwIiB2aWV3Qm94PSIwIDAgNDAwIDQwMCI+PGRlZnM+PHBhdHRlcm4gaWQ9InAiIHdpZHRoPSIxMDAiIGhlaWdodD0iMTAwIiBwYXR0ZXJuVW5pdHM9InVzZXJTcGFjZU9uVXNlIj48Y2lyY2xlIGN4PSI1MCIgY3k9IjUwIiByPSIyMCIgZmlsbD0iI2QxZmFlNSIgZmlsbC1vcGFjaXR5PSIwLjMiLz48L3BhdHRlcm4+PC9kZWZzPjxyZWN0IHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIGZpbGw9InVybCgjcCkiLz48L3N2Zz4=')] bg-cover">
+        <div class="glass w-full max-w-lg rounded-3xl p-8 text-center slide-up flex flex-col items-center relative overflow-hidden">
+            <div class="absolute top-0 right-0 bg-gold-400 text-emerald-900 text-xs font-bold px-4 py-1 rounded-bl-xl shadow">MI Kelas V / Fase C</div>
+            
+            <!-- SVG Illustration -->
+            <div class="w-40 h-40 mb-6 float-anim">
+                <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+                    <path fill="#10B981" d="M45.7,-76.1C58.9,-69.3,68.8,-55.1,77.3,-40.5C85.8,-25.9,93.1,-11,91.8,3.2C90.5,17.4,80.7,30.8,71,43.2C61.3,55.5,51.8,66.8,39.5,74.7C27.2,82.5,12.1,87,-2.6,91C-17.3,95.1,-32.1,98.6,-45.3,92.5C-58.5,86.4,-70.1,70.6,-77.7,53.8C-85.4,37,-89.1,19.2,-87.3,2.4C-85.5,-14.4,-78.2,-30.2,-68.8,-43.3C-59.4,-56.4,-47.9,-66.8,-34.7,-73.6C-21.5,-80.4,-6.6,-83.6,8.5,-81.4C23.5,-79.1,45.7,-76.1,45.7,-76.1Z" transform="translate(100 100) scale(0.9)" />
+                    <text x="50%" y="55%" text-anchor="middle" fill="white" font-size="48" font-family="Poppins" font-weight="bold">Idiom</text>
+                </svg>
+            </div>
+
+            <h1 class="text-3xl font-extrabold text-emerald-800 mb-2">Bahasa Indonesia</h1>
+            <p class="text-sm text-gray-600 mb-8 px-4">Eksplorasi makna kiasan dan penerapannya dalam teknik wawancara 5W+1H.</p>
+
+            <div class="w-full space-y-3">
+                <button onclick="showFloatingSlide('dev-info')" class="w-full bg-white border-2 border-emerald-500 text-emerald-700 hover:bg-emerald-50 font-bold py-3 px-4 rounded-xl transition flex items-center justify-center gap-2">
+                    <i class="fas fa-user-tie"></i> Informasi Pengembang
+                </button>
+                <button onclick="showFloatingSlide('learning-obj')" class="w-full bg-white border-2 border-emerald-500 text-emerald-700 hover:bg-emerald-50 font-bold py-3 px-4 rounded-xl transition flex items-center justify-center gap-2">
+                    <i class="fas fa-bullseye"></i> Tujuan Pembelajaran
+                </button>
+                <button onclick="navigate('cover-screen', 'login-screen')" class="w-full bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-600 hover:to-emerald-700 text-white font-bold py-4 px-4 rounded-xl shadow-lg transition transform hover:-translate-y-1 flex items-center justify-center gap-2 text-lg">
+                    MULAI BELAJAR <i class="fas fa-arrow-right"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Floating Slide: Developer Info -->
+        <div id="slide-dev-info" class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm hidden-screen opacity-0 transition-opacity duration-300">
+            <div class="glass w-11/12 max-w-sm rounded-2xl p-6 text-center transform scale-95 transition-transform duration-300">
+                <div class="relative w-24 h-24 mx-auto mb-4 rounded-full border-4 border-gold-400 overflow-hidden shadow-lg bg-emerald-100 flex items-center justify-center">
+                    <img src="https://i.pinimg.com/736x/28/19/ab/2819ab1fb77fd962a87192428e2858a8.jpg" alt="Foto Pengembang" onerror="this.style.display='none'; document.getElementById('avatar-fallback').style.display='block';" class="w-full h-full object-cover">
+                    <span id="avatar-fallback" class="hidden text-3xl font-bold text-emerald-700">HD</span>
+                </div>
+                <h2 class="text-xl font-bold text-emerald-800">Hamsyin Djabir, M.Pd</h2>
+                <p class="text-sm text-emerald-600 font-semibold mb-2">MIM Unggulan Kota Gorontalo</p>
+                <p class="text-xs text-gray-500 mb-6"><i class="fas fa-envelope mr-1"></i> nithamimunggulan@gmail.com</p>
+                <button onclick="hideFloatingSlide('dev-info')" class="bg-gray-200 hover:bg-gray-300 text-gray-800 font-semibold py-2 px-6 rounded-full w-full transition">Kembali ke Cover</button>
+            </div>
+        </div>
+
+        <!-- Floating Slide: Learning Objective -->
+        <div id="slide-learning-obj" class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm hidden-screen opacity-0 transition-opacity duration-300">
+            <div class="glass w-11/12 max-w-md rounded-2xl p-6 transform scale-95 transition-transform duration-300">
+                <h2 class="text-xl font-bold text-emerald-800 mb-4 text-center border-b pb-2"><i class="fas fa-bullseye text-gold-500 mr-2"></i>Tujuan Pembelajaran</h2>
+                
+                <div class="bg-emerald-50 rounded-lg p-4 mb-4 border-l-4 border-emerald-500">
+                    <p class="text-sm text-gray-800 font-medium">Peserta didik mampu menyusun daftar pertanyaan wawancara yang relevan menggunakan prinsip 5W+1H (dengan penyisipan ragam idiom yang tepat).</p>
+                </div>
+
+                <div class="bg-amber-50 rounded-lg p-4 mb-6">
+                    <p class="font-arabic text-xl text-right mb-2 text-emerald-900" dir="rtl">أَلَمْ تَرَ كَيْفَ ضَرَبَ اللَّهُ مَثَلًا كَلِمَةً طَيِّبَةً كَشَجَرَةٍ طَيِّبَةٍ</p>
+                    <p class="text-xs text-gray-600 italic mb-2">"Tidakkah kamu memperhatikan bagaimana Allah telah membuat perumpamaan kalimat yang baik seperti pohon yang baik..." (QS. Ibrahim: 24)</p>
+                    <p class="text-xs text-emerald-700 font-semibold"><i class="fas fa-heart text-red-500 mr-1"></i> Nilai KBC:</p>
+                    <p class="text-xs text-gray-700">Menggunakan bahasa (idiom) yang baik dan santun adalah wujud cinta kepada sesama dan meneladani akhlak Rasulullah.</p>
+                </div>
+
+                <button onclick="hideFloatingSlide('learning-obj')" class="bg-gray-200 hover:bg-gray-300 text-gray-800 font-semibold py-2 px-6 rounded-full w-full transition">Kembali ke Cover</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- 3. FORM INPUT SISWA -->
+    <section id="login-screen" class="fixed inset-0 z-20 flex flex-col items-center justify-center p-4 hidden-screen">
+        <div class="glass w-full max-w-md rounded-3xl p-8 slide-up">
+            <div class="text-center mb-6">
+                <div class="w-16 h-16 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mx-auto mb-3 text-2xl"><i class="fas fa-user-graduate"></i></div>
+                <h2 class="text-2xl font-bold text-emerald-800">Identitas Siswa</h2>
+                <p class="text-sm text-gray-500">Silakan isi data diri sebelum memulai.</p>
+            </div>
+            
+            <div class="space-y-4">
+                <div>
+                    <label class="block text-sm font-semibold text-gray-700 mb-1">Nama Lengkap</label>
+                    <input type="text" id="student-name" class="w-full px-4 py-3 rounded-xl border border-gray-300 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition" placeholder="Masukkan nama...">
+                </div>
+                <div>
+                    <label class="block text-sm font-semibold text-gray-700 mb-1">Kelas</label>
+                    <select id="student-class" class="w-full px-4 py-3 rounded-xl border border-gray-300 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition bg-white">
+                        <option value="">Pilih Kelas...</option>
+                        <option value="V - A">Kelas V - A</option>
+                        <option value="V - B">Kelas V - B</option>
+                        <option value="V - C">Kelas V - C</option>
+                    </select>
+                </div>
+                <button onclick="submitLogin()" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3 px-4 rounded-xl shadow transition transform hover:-translate-y-1 mt-4">
+                    Lanjutkan <i class="fas fa-arrow-right ml-2"></i>
+                </button>
+                <button onclick="navigate('login-screen', 'cover-screen')" class="w-full text-emerald-600 hover:text-emerald-800 text-sm font-semibold py-2">Batal</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- 4. PENGANTAR & PANDUAN (CAROUSEL) -->
+    <section id="guide-screen" class="fixed inset-0 z-20 flex flex-col items-center justify-center p-4 hidden-screen">
+        <div class="glass w-full max-w-xl rounded-3xl p-6 md:p-8 slide-up relative overflow-hidden h-[80vh] flex flex-col">
+            <div class="text-center mb-4">
+                <h2 class="text-xl md:text-2xl font-bold text-emerald-800">Selamat Datang, <span id="display-name" class="text-gold-500"></span>!</h2>
+                <p class="text-sm text-gray-500">Panduan Penggunaan Media</p>
+            </div>
+            
+            <div id="guide-slider" class="flex-grow relative w-full overflow-hidden">
+                <!-- Slide 1 -->
+                <div class="guide-slide absolute inset-0 transition-transform duration-500 flex flex-col items-center justify-center text-center px-4" style="transform: translateX(0%);">
+                    <img src="https://api.iconify.design/fluent-emoji/books.svg?width=100" class="mb-4">
+                    <h3 class="text-lg font-bold text-emerald-700 mb-2">1. Menu Belajar</h3>
+                    <p class="text-sm text-gray-600">Pelajari materi Idiom dan Wawancara 5W+1H yang dikaitkan dengan kearifan lokal Gorontalo dan nilai Al-Qur'an. Kamu harus menyelesaikan misi di setiap slide materi.</p>
+                </div>
+                <!-- Slide 2 -->
+                <div class="guide-slide absolute inset-0 transition-transform duration-500 flex flex-col items-center justify-center text-center px-4" style="transform: translateX(100%);">
+                    <img src="https://api.iconify.design/fluent-emoji/joystick.svg?width=100" class="mb-4">
+                    <h3 class="text-lg font-bold text-emerald-700 mb-2">2. Menu Bermain</h3>
+                    <p class="text-sm text-gray-600">Setelah materi tuntas, menu Bermain akan terbuka. Selesaikan 10 tantangan interaktif berdasarkan cerita-cerita dari pesisir Teluk Tomini dan Danau Limboto.</p>
+                </div>
+                <!-- Slide 3 -->
+                <div class="guide-slide absolute inset-0 transition-transform duration-500 flex flex-col items-center justify-center text-center px-4" style="transform: translateX(200%);">
+                    <img src="https://api.iconify.design/fluent-emoji/check-mark-button.svg?width=100" class="mb-4">
+                    <h3 class="text-lg font-bold text-emerald-700 mb-2">3. Menu Berlatih</h3>
+                    <p class="text-sm text-gray-600">Buktikan kemampuanmu di 10 soal asesmen berjenjang (HOTS). Dapatkan sertifikat/laporan belajarmu di akhir sesi sebagai bukti ketuntasan.</p>
+                </div>
+            </div>
+
+            <div class="flex justify-between items-center mt-6">
+                <button id="btn-guide-prev" onclick="moveGuide(-1)" class="px-4 py-2 text-emerald-600 font-semibold opacity-50 cursor-not-allowed" disabled>Kembali</button>
+                <div class="flex space-x-2" id="guide-dots">
+                    <div class="w-2 h-2 rounded-full bg-emerald-600"></div>
+                    <div class="w-2 h-2 rounded-full bg-gray-300"></div>
+                    <div class="w-2 h-2 rounded-full bg-gray-300"></div>
+                </div>
+                <button id="btn-guide-next" onclick="moveGuide(1)" class="px-4 py-2 bg-emerald-100 hover:bg-emerald-200 text-emerald-700 rounded-full font-semibold transition">Selanjutnya</button>
+            </div>
+            <button id="btn-guide-finish" onclick="finishGuide()" class="w-full mt-4 bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3 rounded-xl transition hidden">Masuk ke Menu Utama</button>
+        </div>
+    </section>
+
+    <!-- 5. MAIN MENU (SEQUENTIAL LOCKING) -->
+    <section id="main-menu-screen" class="fixed inset-0 z-10 p-4 md:p-8 flex flex-col hidden-screen overflow-y-auto">
+        <div class="max-w-4xl w-full mx-auto pb-20">
+            <!-- Header Profile -->
+            <div class="glass rounded-2xl p-4 flex items-center justify-between mb-8 shadow-sm">
+                <div class="flex items-center gap-3">
+                    <div class="w-12 h-12 bg-gradient-to-br from-emerald-400 to-emerald-600 rounded-full flex items-center justify-center text-white text-xl font-bold border-2 border-white shadow" id="profile-initial">S</div>
+                    <div>
+                        <h2 class="font-bold text-emerald-900 leading-tight" id="menu-student-name">Siswa</h2>
+                        <p class="text-xs text-emerald-600 font-semibold" id="menu-student-class">Kelas V</p>
+                    </div>
+                </div>
+                <button onclick="location.reload()" class="text-red-400 hover:text-red-600 text-sm font-semibold p-2"><i class="fas fa-sign-out-alt"></i> Keluar</button>
+            </div>
+
+            <h2 class="text-2xl font-bold text-center text-emerald-800 mb-6">Peta Perjalanan Belajar</h2>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <!-- Card 1: Belajar -->
+                <div onclick="openMenu('belajar')" class="glass rounded-3xl p-6 border-b-4 border-emerald-500 cursor-pointer transform transition hover:-translate-y-2 hover:shadow-xl relative overflow-hidden group">
+                    <div class="absolute top-0 right-0 w-20 h-20 bg-emerald-100 rounded-bl-full -z-10 group-hover:bg-emerald-200 transition"></div>
+                    <div class="text-4xl text-emerald-500 mb-4"><i class="fas fa-book-open"></i></div>
+                    <h3 class="text-xl font-bold text-emerald-900 mb-1">1. Belajar</h3>
+                    <p class="text-sm text-gray-600 mb-4">Eksplorasi materi idiom & wawancara.</p>
+                    <div class="flex justify-between items-center text-xs font-bold text-emerald-600">
+                        <span>Status: <span id="status-belajar" class="text-green-600">Terbuka 🔓</span></span>
+                    </div>
+                </div>
+
+                <!-- Card 2: Bermain -->
+                <div onclick="openMenu('bermain')" id="card-bermain" class="glass rounded-3xl p-6 border-b-4 border-gray-400 opacity-75 cursor-not-allowed transition relative overflow-hidden">
+                    <div class="absolute inset-0 bg-gray-100/50 z-10 flex items-center justify-center flex-col" id="lock-bermain">
+                        <i class="fas fa-lock text-4xl text-gray-400 mb-2"></i>
+                        <span class="text-xs font-bold text-gray-500 bg-white px-2 py-1 rounded">Selesaikan 'Belajar'</span>
+                    </div>
+                    <div class="text-4xl text-gold-500 mb-4"><i class="fas fa-gamepad"></i></div>
+                    <h3 class="text-xl font-bold text-gray-700 mb-1">2. Bermain</h3>
+                    <p class="text-sm text-gray-500 mb-4">10 Tantangan seru menunggumu.</p>
+                    <div class="text-xs font-bold text-gray-500">Status: <span id="status-bermain">Terkunci 🔒</span></div>
+                </div>
+
+                <!-- Card 3: Berlatih -->
+                <div onclick="openMenu('berlatih')" id="card-berlatih" class="glass rounded-3xl p-6 border-b-4 border-gray-400 opacity-75 cursor-not-allowed transition relative overflow-hidden">
+                    <div class="absolute inset-0 bg-gray-100/50 z-10 flex items-center justify-center flex-col" id="lock-berlatih">
+                        <i class="fas fa-lock text-4xl text-gray-400 mb-2"></i>
+                        <span class="text-xs font-bold text-gray-500 bg-white px-2 py-1 rounded">Selesaikan 'Bermain'</span>
+                    </div>
+                    <div class="text-4xl text-blue-500 mb-4"><i class="fas fa-file-pen"></i></div>
+                    <h3 class="text-xl font-bold text-gray-700 mb-1">3. Berlatih</h3>
+                    <p class="text-sm text-gray-500 mb-4">Uji kemampuan dan cetak sertifikat.</p>
+                    <div class="text-xs font-bold text-gray-500">Status: <span id="status-berlatih">Terkunci 🔒</span></div>
+                </div>
+            </div>
+            
+            <!-- Result Button (Appears when all done) -->
+            <div id="btn-show-report" class="mt-8 text-center hidden">
+                <button onclick="generateReportUI()" class="bg-gold-500 hover:bg-gold-600 text-white font-bold py-3 px-8 rounded-full shadow-lg transition transform hover:scale-105">
+                    <i class="fas fa-award mr-2"></i> Lihat Laporan Hasil Belajar
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- 6. LAYER BELAJAR (6 Slides) -->
+    <section id="belajar-screen" class="fixed inset-0 z-20 bg-white flex flex-col hidden-screen">
+        <!-- Top Nav -->
+        <div class="bg-emerald-600 text-white p-4 flex justify-between items-center shadow-md">
+            <button onclick="confirmExit('belajar')" class="text-white hover:text-emerald-200"><i class="fas fa-arrow-left text-xl"></i></button>
+            <h2 class="font-bold">Materi Belajar (<span id="materi-progress">1/6</span>)</h2>
+            <div class="w-8"></div> <!-- Spacer -->
+        </div>
+
+        <!-- Content Area -->
+        <div class="flex-grow overflow-y-auto p-4 md:p-8 bg-gray-50 pb-24" id="belajar-content-area">
+            <!-- Injected via JS -->
+        </div>
+
+        <!-- Bottom Nav -->
+        <div class="bg-white border-t p-4 flex justify-between items-center fixed bottom-0 left-0 w-full shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.1)]">
+            <button id="btn-materi-prev" onclick="moveMateri(-1)" class="px-5 py-2 bg-gray-200 text-gray-700 rounded-lg font-semibold invisible">Kembali</button>
+            <button id="btn-materi-next" onclick="moveMateri(1)" class="px-5 py-2 bg-emerald-600 text-white rounded-lg font-semibold opacity-50 cursor-not-allowed shadow" disabled>Selesaikan Kuis Dulu</button>
+        </div>
+    </section>
+
+    <!-- 7. LAYER BERMAIN (10 Challenges) -->
+    <section id="bermain-screen" class="fixed inset-0 z-20 bg-emerald-50 flex flex-col hidden-screen">
+        <div class="bg-gold-500 text-emerald-900 p-4 flex justify-between items-center shadow-md">
+            <button onclick="confirmExit('bermain')" class="hover:text-white"><i class="fas fa-arrow-left text-xl"></i></button>
+            <h2 class="font-bold">Tantangan Bermain (<span id="bermain-progress">1/10</span>)</h2>
+            <div class="font-bold bg-white/30 px-3 py-1 rounded-full text-sm">Skor: <span id="bermain-score-display">0</span></div>
+        </div>
+        
+        <div class="flex-grow overflow-y-auto p-4 md:p-6 pb-24" id="bermain-content-area">
+            <!-- Injected via JS -->
+        </div>
+        
+        <div class="bg-white border-t p-4 flex justify-end items-center fixed bottom-0 left-0 w-full shadow-lg">
+            <button id="btn-bermain-next" onclick="submitBermainAnswer()" class="px-6 py-3 bg-emerald-600 text-white rounded-xl font-bold shadow w-full md:w-auto">Jawab</button>
+        </div>
+    </section>
+
+    <!-- 8. LAYER BERLATIH (10 Asesmen HOTS) -->
+    <section id="berlatih-screen" class="fixed inset-0 z-20 bg-blue-50 flex flex-col hidden-screen">
+        <div class="bg-blue-600 text-white p-4 flex justify-between items-center shadow-md">
+            <button onclick="confirmExit('berlatih')" class="hover:text-blue-200"><i class="fas fa-arrow-left text-xl"></i></button>
+            <h2 class="font-bold">Asesmen Berlatih (<span id="berlatih-progress">1/10</span>)</h2>
+            <div class="text-xs bg-white/20 px-2 py-1 rounded"><i class="fas fa-stopwatch"></i> Fokus</div>
+        </div>
+        
+        <div class="flex-grow overflow-y-auto p-4 md:p-6 pb-24" id="berlatih-content-area">
+            <!-- Injected via JS -->
+        </div>
+        
+        <div class="bg-white border-t p-4 flex justify-between items-center fixed bottom-0 left-0 w-full shadow-lg">
+            <div class="text-xs font-bold text-gray-500" id="berlatih-bobot">Bobot: -</div>
+            <button id="btn-berlatih-next" onclick="submitBerlatihAnswer()" class="px-6 py-3 bg-blue-600 text-white rounded-xl font-bold shadow w-1/2 md:w-auto">Simpan & Lanjut</button>
+        </div>
+    </section>
+
+    <!-- 9. REPORT SCREEN (PDF Area) -->
+    <section id="report-screen" class="fixed inset-0 z-30 bg-gray-100 flex flex-col items-center overflow-y-auto p-4 hidden-screen">
+        <div class="w-full max-w-3xl flex justify-between items-center mb-4">
+            <button onclick="navigate('report-screen', 'main-menu-screen')" class="text-emerald-700 font-bold bg-white px-4 py-2 rounded shadow hover:bg-emerald-50"><i class="fas fa-arrow-left"></i> Menu Utama</button>
+            <button onclick="downloadPDF()" class="bg-emerald-600 text-white font-bold px-4 py-2 rounded shadow hover:bg-emerald-700"><i class="fas fa-file-pdf mr-2"></i> Unduh PDF</button>
+        </div>
+        
+        <!-- Print Area Container -->
+        <div id="pdf-content" class="bg-white w-full max-w-3xl rounded shadow-lg p-8 text-gray-800 border-t-8 border-emerald-600 relative">
+            <!-- Kop -->
+            <div class="flex items-center justify-between border-b-2 border-emerald-800 pb-4 mb-6">
+                <div class="w-20">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/f/f2/Lambang_Kementerian_Agama.png" alt="Logo Kemenag" class="w-16 h-auto" onerror="this.style.display='none'">
+                </div>
+                <div class="text-center flex-grow">
+                    <h1 class="text-xl font-bold text-emerald-900">LAPORAN HASIL BELAJAR - MPI IDIOM</h1>
+                    <p class="text-sm font-semibold text-gray-700">Mata Pelajaran: Bahasa Indonesia | Fase C / Kelas V</p>
+                    <p class="text-xs text-gray-600">Dikembangkan oleh: Hamsyin Djabir, M.Pd - MIM Unggulan Kota Gorontalo</p>
+                </div>
+            </div>
+
+            <!-- Data Siswa -->
+            <div class="mb-6 grid grid-cols-2 gap-4 text-sm bg-gray-50 p-4 rounded border">
+                <div><span class="font-bold">Nama Siswa:</span> <span id="rep-name"></span></div>
+                <div><span class="font-bold">Tanggal:</span> <span id="rep-date"></span></div>
+                <div><span class="font-bold">Kelas:</span> <span id="rep-class"></span></div>
+                <div><span class="font-bold">Sekolah:</span> MIM Unggulan Kota Gorontalo</div>
+            </div>
+
+            <!-- Rekap Nilai -->
+            <h2 class="text-lg font-bold text-emerald-800 mb-3 border-b pb-1">A. Rekapitulasi Pembelajaran</h2>
+            <div class="grid grid-cols-2 gap-4 mb-6">
+                <div class="bg-emerald-50 p-4 rounded border border-emerald-200 text-center">
+                    <p class="text-sm font-semibold text-gray-600">Skor Menu Bermain</p>
+                    <p class="text-3xl font-bold text-emerald-600" id="rep-bermain-score">0</p>
+                    <p class="text-xs text-gray-500">Skala 0-100</p>
+                </div>
+                <div class="bg-blue-50 p-4 rounded border border-blue-200 text-center">
+                    <p class="text-sm font-semibold text-gray-600">Nilai Akhir Asesmen Berlatih</p>
+                    <p class="text-3xl font-bold text-blue-600" id="rep-berlatih-score">0</p>
+                    <p class="text-xs text-gray-500">Predikat: <span id="rep-predikat" class="font-bold"></span></p>
+                </div>
+            </div>
+
+            <!-- Analisis HOTS -->
+            <h2 class="text-lg font-bold text-emerald-800 mb-3 border-b pb-1">B. Analisis Asesmen Berjenjang</h2>
+            <table class="w-full text-sm border-collapse border border-gray-300 mb-6">
+                <tr class="bg-gray-100">
+                    <th class="border border-gray-300 p-2 text-left">Level Kognitif</th>
+                    <th class="border border-gray-300 p-2 text-center">Benar / Total</th>
+                    <th class="border border-gray-300 p-2 text-center">Persentase</th>
+                </tr>
+                <tr>
+                    <td class="border border-gray-300 p-2">Level 1 (Pemahaman Dasar)</td>
+                    <td class="border border-gray-300 p-2 text-center" id="rep-l1-benar">-</td>
+                    <td class="border border-gray-300 p-2 text-center" id="rep-l1-persen">-</td>
+                </tr>
+                <tr>
+                    <td class="border border-gray-300 p-2">Level 2 (Penerapan)</td>
+                    <td class="border border-gray-300 p-2 text-center" id="rep-l2-benar">-</td>
+                    <td class="border border-gray-300 p-2 text-center" id="rep-l2-persen">-</td>
+                </tr>
+                <tr>
+                    <td class="border border-gray-300 p-2">Level 3 (Penalaran HOTS)</td>
+                    <td class="border border-gray-300 p-2 text-center" id="rep-l3-benar">-</td>
+                    <td class="border border-gray-300 p-2 text-center" id="rep-l3-persen">-</td>
+                </tr>
+            </table>
+
+            <!-- Catatan KBC -->
+            <h2 class="text-lg font-bold text-emerald-800 mb-2">C. Catatan Kurikulum Berbasis Cinta (KBC)</h2>
+            <div class="bg-amber-50 p-4 rounded border border-amber-200 text-sm mb-6">
+                <p class="font-arabic text-lg text-right mb-2 text-emerald-900" dir="rtl">أَلَمْ تَرَ كَيْفَ ضَرَبَ اللَّهُ مَثَلًا كَلِمَةً طَيِّبَةً كَشَجَرَةٍ طَيِّبَةٍ</p>
+                <p class="mb-2 italic text-gray-700">"Tidakkah kamu memperhatikan bagaimana Allah telah membuat perumpamaan kalimat yang baik seperti pohon yang baik..." (QS. Ibrahim: 24)</p>
+                <p class="font-semibold text-emerald-800 mt-2">Rekomendasi Guru:</p>
+                <p id="rep-rekomendasi" class="text-gray-700 mt-1"></p>
+            </div>
+
+            <!-- TTD -->
+            <div class="mt-12 flex justify-end">
+                <div class="text-center">
+                    <p class="text-sm mb-16">Gorontalo, <span id="rep-date-ttd"></span><br>Guru Mata Pelajaran,</p>
+                    <p class="font-bold underline text-sm">Hamsyin Djabir, M.Pd</p>
+                    <p class="text-xs text-gray-500">MIM Unggulan Kota Gorontalo</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- DATA & LOGIC SCRIPTS -->
+    <script>
+        /* === CONFIGURATION GOOGLE APPS SCRIPT === */
+        const GAS_URL = "https://script.google.com/macros/s/AKfycbwEy4ztiE72sRo3rBpEh78xjQ7XG-D-NeQ_021srJMr0sjBoSBTxmlAxwgmPCL_JFoeEQ/exec";
+
+        /* === DATA MATERI (BELAJAR) === */
+        const materiData = [
+            {
+                title: "1. Apa itu Idiom?",
+                content: `
+                    <div class="prose max-w-none text-gray-700">
+                        <p class="mb-4">Idiom adalah gabungan kata yang membentuk arti baru dan tidak bisa diterjemahkan kata per kata. Idiom membuat bahasa kita menjadi lebih indah dan bermakna.</p>
+                        <div class="bg-emerald-50 p-4 rounded-xl border-l-4 border-emerald-500 mb-4">
+                            <h4 class="font-bold text-emerald-800 mb-2"><i class="fas fa-map-marker-alt text-red-500"></i> Konteks Gorontalo</h4>
+                            <p class="text-sm">Masyarakat Gorontalo dikenal ramah. Seorang paman di pesisir <strong>Teluk Tomini</strong> yang selalu ramah menyapa tetangganya sering disebut memiliki sifat "murah hati" (suka memberi/baik). Kata "murah hati" adalah contoh idiom.</p>
+                        </div>
+                        <div class="bg-amber-50 p-4 rounded-xl mb-6">
+                            <p class="font-arabic text-xl text-right mb-1 text-emerald-900">وَقُولُوا لِلنَّاسِ حُسْنًا</p>
+                            <p class="text-xs italic mb-2">"...dan ucapkanlah kata-kata yang baik kepada manusia..." (QS. Al-Baqarah: 83)</p>
+                            <p class="text-sm font-semibold text-emerald-700"><i class="fas fa-heart text-red-500"></i> Nilai KBC:</p>
+                            <p class="text-sm">Memilih idiom yang baik dan tidak menyakiti hati adalah bentuk <strong>cinta kepada sesama manusia</strong>.</p>
+                        </div>
+                    </div>
+                `,
+                quiz: {
+                    q: "Apa makna dari idiom 'murah hati' sesuai contoh di atas?",
+                    options: ["A. Suka berhemat uang", "B. Suka memberi dan baik hati", "C. Harga hatinya murah"],
+                    ans: 1
+                }
+            },
+            {
+                title: "2. Ciri-ciri Idiom",
+                content: `
+                    <div class="prose max-w-none text-gray-700">
+                        <ul class="list-disc pl-5 mb-4 space-y-2">
+                            <li>Bukan arti sebenarnya (Kiasan).</li>
+                            <li>Bentuk kata-katanya tetap, tidak bisa dibolak-balik (misal: "buah bibir" tidak bisa menjadi "bibir buah").</li>
+                        </ul>
+                        <div class="bg-emerald-50 p-4 rounded-xl border-l-4 border-emerald-500 mb-4">
+                            <h4 class="font-bold text-emerald-800 mb-2"><i class="fas fa-water text-blue-500"></i> Konteks Gorontalo</h4>
+                            <p class="text-sm">Upaya penyelamatan <strong>Danau Limboto</strong> dari pendangkalan kini menjadi "buah bibir" (bahan pembicaraan) masyarakat. Semua orang membahas pentingnya kelestarian danau tersebut.</p>
+                        </div>
+                        <div class="bg-amber-50 p-4 rounded-xl mb-6">
+                            <p class="text-sm font-semibold text-emerald-700"><i class="fas fa-leaf text-green-500"></i> Nilai KBC:</p>
+                            <p class="text-sm">Membicarakan ("buah bibir") solusi lingkungan adalah wujud <strong>cinta kelestarian alam</strong> yang dititipkan Allah.</p>
+                        </div>
+                    </div>
+                `,
+                quiz: {
+                    q: "Idiom 'buah bibir' memiliki arti...",
+                    options: ["A. Bahan pembicaraan orang banyak", "B. Buah yang enak dimakan", "C. Orang yang suka berbicara kasar"],
+                    ans: 0
+                }
+            },
+            {
+                title: "3. Idiom tentang Sifat Manusia",
+                content: `
+                    <div class="prose max-w-none text-gray-700">
+                        <p class="mb-4">Banyak idiom digunakan untuk menggambarkan karakter seseorang. Contohnya:</p>
+                        <ul class="list-disc pl-5 mb-4 space-y-2 text-sm">
+                            <li><strong>Ringan tangan:</strong> Suka menolong / rajin bekerja.</li>
+                            <li><strong>Besar kepala:</strong> Sombong.</li>
+                            <li><strong>Bintang kelas:</strong> Murid terpintar.</li>
+                        </ul>
+                        <div class="bg-emerald-50 p-4 rounded-xl border-l-4 border-emerald-500 mb-6">
+                            <p class="text-sm">Di daerah agraris Gorontalo, para petani jagung sangat "ringan tangan" bergotong royong saat masa panen tiba. Ini mencerminkan akhlak Islam yang mengedepankan Ta'awun (tolong menolong).</p>
+                        </div>
+                    </div>
+                `,
+                quiz: {
+                    q: "Sikap petani yang bergotong-royong mencerminkan idiom...",
+                    options: ["A. Besar kepala", "B. Ringan tangan", "C. Tangan kanan"],
+                    ans: 1
+                }
+            },
+            {
+                title: "4. Idiom Berkaitan dengan Alam",
+                content: `
+                    <div class="prose max-w-none text-gray-700">
+                        <p class="mb-4">Idiom sering meminjam unsur alam (hewan/tumbuhan):</p>
+                        <ul class="list-disc pl-5 mb-4 space-y-2 text-sm">
+                            <li><strong>Kuda hitam:</strong> Pemenang yang tidak diprediksi.</li>
+                            <li><strong>Kembang desa:</strong> Perempuan tercantik di desa.</li>
+                            <li><strong>Kutu buku:</strong> Orang yang suka membaca.</li>
+                        </ul>
+                        <div class="bg-amber-50 p-4 rounded-xl mb-6">
+                            <p class="text-sm font-semibold text-emerald-700"><i class="fas fa-quran text-gold-500"></i> Hikmah:</p>
+                            <p class="text-sm">Al-Qur'an (Surah Ibrahim: 24) juga menggunakan analogi alam (pohon yang baik berakar kuat) untuk menggambarkan kalimat yang baik. Gunakanlah perumpamaan alam untuk hal-hal positif.</p>
+                        </div>
+                    </div>
+                `,
+                quiz: {
+                    q: "Siswa yang meraih juara padahal awalnya tidak diunggulkan disebut...",
+                    options: ["A. Kutu buku", "B. Kuda hitam", "C. Bintang lapangan"],
+                    ans: 1
+                }
+            },
+            {
+                title: "5. Konsep Wawancara 5W+1H",
+                content: `
+                    <div class="prose max-w-none text-gray-700">
+                        <p class="mb-4">Untuk menggali informasi, kita menggunakan 5W+1H:</p>
+                        <div class="grid grid-cols-2 gap-2 text-sm mb-4">
+                            <div class="bg-gray-100 p-2 rounded"><strong>What (Apa):</strong> Kejadian/Benda</div>
+                            <div class="bg-gray-100 p-2 rounded"><strong>Who (Siapa):</strong> Tokoh/Orang</div>
+                            <div class="bg-gray-100 p-2 rounded"><strong>Where (Di mana):</strong> Tempat</div>
+                            <div class="bg-gray-100 p-2 rounded"><strong>When (Kapan):</strong> Waktu</div>
+                            <div class="bg-gray-100 p-2 rounded"><strong>Why (Mengapa):</strong> Alasan</div>
+                            <div class="bg-gray-100 p-2 rounded"><strong>How (Bagaimana):</strong> Proses/Cara</div>
+                        </div>
+                        <p class="text-sm bg-blue-50 p-3 rounded-lg border-l-4 border-blue-500">Wawancara yang baik dilandasi rasa <strong>cinta tanah air</strong> dengan menggali potensi tokoh-tokoh lokal di sekitar kita.</p>
+                    </div>
+                `,
+                quiz: {
+                    q: "Kata tanya yang tepat untuk menanyakan ALASAN terjadinya sesuatu adalah...",
+                    options: ["A. Kapan (When)", "B. Di mana (Where)", "C. Mengapa (Why)"],
+                    ans: 2
+                }
+            },
+            {
+                title: "6. Menyusun Wawancara Menggunakan Idiom",
+                content: `
+                    <div class="prose max-w-none text-gray-700">
+                        <p class="mb-4">Kita bisa memasukkan idiom yang sopan ke dalam pertanyaan 5W+1H agar wawancara terasa lebih akrab dan menghargai narasumber.</p>
+                        <div class="bg-emerald-50 p-4 rounded-xl border-l-4 border-emerald-500 mb-6">
+                            <h4 class="font-bold text-emerald-800 mb-2">Contoh Kasus:</h4>
+                            <p class="text-sm mb-2">Kamu mewawancarai Pak Budi, nelayan sukses di <strong>Teluk Tomini</strong> yang banyak membantu warga miskin.</p>
+                            <p class="text-sm font-semibold">Penerapan (How + Idiom):</p>
+                            <p class="text-sm italic">"<strong>Bagaimana</strong> perasaan Bapak saat menjadi <strong>buah bibir</strong> (dibicarakan kebaikannya) di kampung ini karena sikap <strong>murah hati</strong> Bapak?"</p>
+                        </div>
+                    </div>
+                `,
+                quiz: {
+                    q: "Manakah kalimat tanya yang menggunakan idiom dengan benar?",
+                    options: [
+                        "A. Siapa yang menjadi 'meja hijau' di kelas ini?", 
+                        "B. Mengapa Bapak dijuluki 'tangan kanan' (orang kepercayaan) kepala desa?", 
+                        "C. Kapan Bapak pergi ke 'kuda hitam'?"
+                    ],
+                    ans: 1
+                }
+            }
+        ];
+
+        /* === DATA BERMAIN (10 Soal - PG Interaktif dgn Stimulus) === */
+        const bermainData = [
+            {
+                stimulus: "Pak Hasan adalah seorang nelayan tua yang tinggal di pesisir Teluk Tomini, Gorontalo. Setiap subuh, sebelum melaut, ia selalu menyempatkan diri shalat berjamaah di masjid. Hasil tangkapan ikannya tidak pernah ia nikmati sendiri. Jika mendapat ikan tuna yang besar, ia selalu membagikannya sebagian kepada tetangga yang membutuhkan, terutama para janda tua dan anak yatim. Warga desa sangat menghormati Pak Hasan karena kebaikannya ini. Dalam ajaran Islam, sikap gemar memberi dan membantu sesama sangat dicintai Allah SWT.",
+                q: "Berdasarkan cerita di atas, idiom yang paling tepat untuk menggambarkan sifat Pak Hasan adalah...",
+                options: ["A. Panjang tangan", "B. Ringan tangan", "C. Tangan besi", "D. Lepas tangan"],
+                ans: 1
+            },
+            {
+                stimulus: "Danau Limboto di Provinsi Gorontalo memiliki sejarah panjang dan keanekaragaman hayati yang kaya. Sayangnya, karena ulah sebagian orang yang membuang sampah sembarangan dan menebang pohon di hulu, danau ini mengalami pendangkalan yang parah. Rudi, seorang siswa Madrasah, sangat peduli dengan hal ini. Ia siang malam mencari informasi dari berbagai buku di perpustakaan untuk menemukan ide kampanye kebersihan danau. Rudi selalu terlihat membawa buku kemana-mana.",
+                q: "Julukan berupa idiom yang tepat untuk Rudi yang sangat suka membaca buku adalah...",
+                options: ["A. Kutu buku", "B. Bintang kelas", "C. Banting tulang", "D. Otak udang"],
+                ans: 0
+            },
+            {
+                stimulus: "Di dataran agraris Gorontalo, jagung merupakan komoditas utama. Pak Anton adalah seorang petani jagung yang sukses. Kesuksesannya bukan diraih dengan santai. Sejak azan subuh berkumandang hingga matahari terbenam, ia terus bekerja di ladang, memupuk, dan merawat tanamannya tanpa mengenal lelah. Ia melakukan semua itu demi membiayai sekolah anak-anaknya agar menjadi manusia yang berguna bagi nusa dan agama.",
+                q: "Idiom yang bermakna 'bekerja keras mati-matian' seperti yang dilakukan Pak Anton adalah...",
+                options: ["A. Cuci mata", "B. Gigit jari", "C. Banting tulang", "D. Angkat kaki"],
+                ans: 2
+            },
+            {
+                stimulus: "Ahmad dan Zaid sedang bermain di halaman madrasah. Tiba-tiba, pot bunga kesayangan ibu guru pecah tersenggol oleh Zaid. Zaid panik, namun karena ia anak yang jujur, ia langsung menemui ibu guru. Zaid menceritakan kejadian sebenarnya tanpa menutupi kesalahan, lalu meminta maaf. Zaid tidak mau melempar kesalahan kepada Ahmad. Sikap jujur Zaid mencerminkan ajaran Rasulullah yang selalu berkata benar (Siddiq).",
+                q: "Sikap Zaid yang berani mengakui kesalahannya mencerminkan idiom 'berlapang dada', namun jika ia malah menyalahkan Ahmad, idiom apa yang tepat untuk sikap buruk tersebut?",
+                options: ["A. Cuci tangan", "B. Kambing hitam", "C. Muka badak", "D. Mulut manis"],
+                ans: 1
+            },
+            {
+                stimulus: "Fatimah akan melakukan tugas wawancara Bahasa Indonesia. Ia berencana mewawancarai Kepala Desa pesisir Botubarani tentang kemunculan Hiu Paus. Fatimah ingin menanyakan alasan mengapa masyarakat desa tersebut sangat menjaga kebersihan laut sehingga Hiu Paus mau datang. Ia harus menyusun pertanyaan dengan unsur 5W+1H.",
+                q: "Kata tanya apa yang harus Fatimah gunakan untuk menanyakan 'ALASAN' masyarakat menjaga laut?",
+                options: ["A. Who (Siapa)", "B. How (Bagaimana)", "C. When (Kapan)", "D. Why (Mengapa)"],
+                ans: 3
+            },
+            {
+                stimulus: "Pemerintah Provinsi Gorontalo sedang giat mempromosikan wisata religi ke Masjid Hunto Sultan Amay. Berita tentang keindahan arsitektur dan nilai sejarah masjid tersebut cepat menyebar dari mulut ke mulut. Kini, masjid tersebut menjadi topik utama yang dibicarakan oleh wisatawan dari luar daerah maupun warga lokal yang merasa bangga dengan peninggalan Islam tersebut.",
+                q: "Sesuatu yang menjadi topik utama pembicaraan orang banyak dalam idiom disebut...",
+                options: ["A. Buah bibir", "B. Buah tangan", "C. Kabar angin", "D. Isapan jempol"],
+                ans: 0
+            },
+            {
+                stimulus: "Saat berkunjung ke panti asuhan di Kota Gorontalo, rombongan siswa Madrasah Ibtidaiyah membawa banyak sekali oleh-oleh berupa buku bacaan, alat tulis, dan makanan ringan. Mereka membagikannya dengan senyum tulus sebagai wujud cinta sesama (ukhuwah). Ibu panti sangat berterima kasih atas pemberian tersebut.",
+                q: "Oleh-oleh atau barang bawaan saat berkunjung dalam bahasa idiom disebut...",
+                options: ["A. Buah hati", "B. Buah karya", "C. Buah tangan", "D. Buah bibir"],
+                ans: 2
+            },
+            {
+                stimulus: "Budi sering mendapatkan nilai jelek karena malas belajar. Suatu hari, guru menasihatinya dengan lembut, mengutip ayat Al-Qur'an tentang pentingnya ilmu. Namun, Budi mengabaikan nasihat tersebut dan tidak mau menerima masukan dari siapa pun. Ia merasa dirinya paling benar meski tindakannya salah.",
+                q: "Sifat tidak mau menerima nasihat dan merasa paling benar disebut dengan idiom...",
+                options: ["A. Kepala dingin", "B. Besar kepala", "C. Keras kepala", "D. Berat sebelah"],
+                ans: 2
+            },
+            {
+                stimulus: "Dalam sebuah kompetisi Kaligrafi tingkat Provinsi Gorontalo, seluruh peserta memprediksi juara bertahan dari sekolah A akan menang lagi. Namun tak disangka, seorang siswa dari desa kecil di pesisir utara tampil memukau dengan karya kaligrafi kontemporernya dan keluar sebagai juara satu. Semua orang terkejut dengan kemenangan siswa desa tersebut.",
+                q: "Pemenang yang sebelumnya tidak diprediksi atau tidak diperhitungkan, dijuluki sebagai...",
+                options: ["A. Bintang lapangan", "B. Kuda hitam", "C. Anak emas", "D. Jago merah"],
+                ans: 1
+            },
+            {
+                stimulus: "Siti mendapat tugas dari Pak Hamsyin untuk mewawancarai pengrajin kopiah karanji (kopiah khas Gorontalo) yang terkenal ahli. Siti menyusun pertanyaan: 'Bagaimana proses pembuatan kopiah ini hingga hasilnya sangat rapi?'. Pak pengrajin menjawab bahwa dibutuhkan ketelitian dan kesabaran ekstra dalam menganyam rumput mintu.",
+                q: "Pertanyaan Siti ('Bagaimana...') dalam konsep 5W+1H mewakili unsur...",
+                options: ["A. What", "B. Where", "C. Who", "D. How"],
+                ans: 3
+            }
+        ];
+
+        /* === DATA BERLATIH (10 Soal HOTS dgn Bobot) === */
+        const berlatihData = [
+            // LEVEL 1 (1-3) @ 8 Poin
+            {
+                level: 1, bobot: 8,
+                stimulus: "Bacalah kalimat berikut dengan cermat: 'Sejak memenangkan lomba pidato Bahasa Arab tingkat Provinsi Gorontalo, sikap Hasan berubah. Ia tidak mau lagi bermain dengan teman-teman lamanya dan sering memamerkan pialanya.'",
+                q: "Idiom yang paling tepat untuk menggambarkan perubahan sikap Hasan adalah...",
+                options: ["A. Rendah hati", "B. Besar kepala", "C. Tangan kanan", "D. Ringan tangan"],
+                ans: 1
+            },
+            {
+                level: 1, bobot: 8,
+                stimulus: "Wartawan cilik madrasah sedang meliput perayaan tradisi 'Walima' (Maulid Nabi) di Gorontalo. Ia ingin menanyakan tentang tokoh pemuka agama yang memimpin doa di acara tersebut.",
+                q: "Pertanyaan 5W+1H yang paling tepat diajukan adalah...",
+                options: [
+                    "A. Dimana tradisi Walima ini diadakan setiap tahun?",
+                    "B. Siapa ustadz atau tokoh adat yang memimpin doa pada tradisi Walima ini?",
+                    "C. Kapan kue Walima mulai dibagikan kepada warga?",
+                    "D. Berapa jumlah kue yang disusun dalam tolanga?"
+                ],
+                ans: 1
+            },
+            {
+                level: 1, bobot: 8,
+                stimulus: "Paman Nantu bekerja sebagai asisten pribadi Bupati Gorontalo. Segala rahasia pekerjaan dan tugas-tugas penting bupati selalu dipercayakan kepada Paman Nantu. Ia bekerja dengan sangat amanah sesuai ajaran Islam.",
+                q: "Karena posisinya yang sangat dipercaya, Paman Nantu dijuluki sebagai ... Bupati.",
+                options: ["A. Kaki tangan", "B. Tangan kanan", "C. Mata-mata", "D. Tangan besi"],
+                ans: 1
+            },
+            // LEVEL 2 (4-7) @ 10 Poin
+            {
+                level: 2, bobot: 10,
+                stimulus: "Kawasan Danau Limboto menghadapi krisis lingkungan. Banyak spesies ikan endemik yang terancam punah. Sebuah LSM lingkungan datang untuk meneliti. Siswa kelas 5 ditugaskan membuat satu pertanyaan wawancara untuk ketua LSM tersebut dengan menggabungkan unsur 'Why' (Mengapa) dan sebuah idiom yang bermakna 'mencari penyelesaian masalah'.",
+                q: "Manakah kalimat wawancara yang paling memenuhi syarat di atas?",
+                options: [
+                    "A. Bagaimana cara LSM Bapak menyelesaikan masalah Danau Limboto?",
+                    "B. Mengapa pemerintah lepas tangan terhadap masalah ini?",
+                    "C. Mengapa LSM Bapak turun tangan mencari jalan keluar untuk krisis Danau Limboto?",
+                    "D. Siapa yang menjadi kambing hitam dalam kerusakan danau ini?"
+                ],
+                ans: 2
+            },
+            {
+                level: 2, bobot: 10,
+                stimulus: "Di pasar sentral Kota Gorontalo, terjadi pertengkaran antara dua pedagang karena kesalahpahaman lapak jualan. Pertengkaran nyaris memanas, namun seorang haji yang bijak melerai mereka. Ia menasihati dengan mengutip ayat tentang ukhuwah islamiyah dan meminta mereka menyelesaikan masalah dengan tenang tanpa emosi.",
+                q: "Idiom yang tepat untuk menyarankan penyelesaian masalah dengan tenang dan tidak emosi adalah...",
+                options: ["A. Berdarah dingin", "B. Kepala dingin", "C. Bermuka dua", "D. Hati kecil"],
+                ans: 1
+            },
+            {
+                level: 2, bobot: 10,
+                stimulus: "Farhan adalah anak yatim yang tinggal di pinggiran Teluk Tomini. Meskipun hidup serba kekurangan, ia tidak pernah meminta-minta. Ia selalu membantu ibunya membuat jaring nelayan seusai sekolah. Meski lelah, di sekolah ia sangat cerdas dan selalu mendapat peringkat pertama. Guru-guru menjulukinya 'bintang kelas'.",
+                q: "Penggunaan idiom 'bintang kelas' pada paragraf di atas mengandung makna...",
+                options: [
+                    "A. Anak yang suka melihat bintang di malam hari.",
+                    "B. Anak yang nasibnya terang seperti bintang.",
+                    "C. Murid yang paling pintar dan berprestasi di kelasnya.",
+                    "D. Murid yang paling disayangi oleh ibunya."
+                ],
+                ans: 2
+            },
+            {
+                level: 2, bobot: 10,
+                stimulus: "Ibu guru menugaskan kelompok A untuk mewawancarai penjaga hutan pelestarian Burung Maleo (burung endemik Sulawesi/Gorontalo). Kelompok A ingin mengetahui PROSES atau CARA burung Maleo menetaskan telurnya di dalam pasir yang hangat.",
+                q: "Kata tanya apa yang harus digunakan di awal kalimat, dan idiom apa yang cocok untuk memuji kerja keras penjaga hutan tersebut?",
+                options: [
+                    "A. Dimana ; Ringan tangan",
+                    "B. Bagaimana ; Banting tulang",
+                    "C. Mengapa ; Angkat topi",
+                    "D. Kapan ; Cuci tangan"
+                ],
+                ans: 1
+            },
+            // LEVEL 3 (8-10) HOTS @ 12 Poin
+            {
+                level: 3, bobot: 12,
+                stimulus: "Bacalah teks berikut dengan analisis kritis: \n'Banjir bandang sering melanda beberapa desa di Bone Bolango. Banyak warga yang menuduh para penebang kayu liar sebagai [Idiom X]. Namun, Kepala BPBD menyatakan bahwa warga juga sering [Idiom Y] dengan membuang sampah ke sungai. Saat ditanya oleh wartawan, \"[Tanya Z] bapak menyimpulkan hal tersebut?\", Kepala BPBD menunjukkan data timbunan sampah plastik yang menyumbat bendungan.'",
+                q: "Tentukan secara berurutan [Idiom X], [Idiom Y], dan [Kata Tanya Z] yang paling tepat untuk melengkapi teks di atas!",
+                options: [
+                    "A. Biang keladi - Buang muka - Mengapa",
+                    "B. Kambing hitam - Lepas tangan - Bagaimana",
+                    "C. Biang keladi - Cuci tangan - Bagaimana",
+                    "D. Kambing hitam - Turun tangan - Mengapa"
+                ],
+                ans: 2
+            },
+            {
+                level: 3, bobot: 12,
+                stimulus: "Perhatikan kutipan QS. Ibrahim ayat 24: 'Tidakkah kamu memperhatikan bagaimana Allah telah membuat perumpamaan kalimat yang baik seperti pohon yang baik, akarnya teguh dan cabangnya (menjulang) ke langit.' (Terjemahan Kemenag RI). \nSebagai seorang jurnalis cilik yang mengamalkan Kurikulum Berbasis Cinta, kamu mewawancarai seorang teman yang suka menggunakan kata-kata kasar dan julukan buruk (idiom negatif) kepada teman sekelasnya.",
+                q: "Berdasarkan nilai ayat di atas, pertanyaan wawancara (5W+1H) yang memuat nasihat idiom paling tepat (HOTS) adalah...",
+                options: [
+                    "A. Mengapa kamu suka menjadi 'mulut berbisa' padahal Allah menyukai 'kalimat seperti pohon yang baik'?",
+                    "B. Siapa yang menyuruhmu menjadi 'bintang kelas' dengan cara mengejek teman?",
+                    "C. Dimana kamu belajar idiom 'buah bibir' yang merusak pertemanan?",
+                    "D. Kapan kamu akan 'cuci tangan' dari kesalahanmu ini?"
+                ],
+                ans: 0
+            },
+            {
+                level: 3, bobot: 12,
+                stimulus: "Seorang ahli pertanian dari Jakarta datang ke Gorontalo untuk meneliti inovasi pupuk organik tongkol jagung. Siswa MI ditugaskan mewawancarainya. Tujuan utama wawancara adalah mengetahui WAKTU dimulainya riset, TEMPAT riset dilakukan, dan ALASAN memilih tongkol jagung. Siswa menyusun tiga pertanyaan berurutan.",
+                q: "Susunan kata tanya (5W+1H) yang harus digunakan secara berurutan sesuai tujuan utama tersebut adalah...",
+                options: [
+                    "A. What, Where, How",
+                    "B. When, Where, Why",
+                    "C. Who, When, What",
+                    "D. Where, When, Why"
+                ],
+                ans: 1
+            }
+        ];
+
+        /* === STATE MANAGEMENT === */
+        let state = {
+            studentName: '',
+            studentClass: '',
+            isBelajarDone: false,
+            isBermainDone: false,
+            materiIdx: 0,
+            bermainIdx: 0,
+            berlatihIdx: 0,
+            scoreBermain: 0,
+            scoreBerlatih: { l1:0, l2:0, l3:0, total:0 },
+            // STATE TAMBAHAN UNTUK TRACKING JAWABAN
+            userAnswersBermain: [],
+            userAnswersBerlatih: [],
+            berlatihBenar: 0
+        };
+
+        /* === FUNGSI API GOOGLE SHEETS === */
+        function sendDataToGAS(kategori, benar, salah, skor, detailJawaban) {
+            if(!GAS_URL || GAS_URL === "URL_GAS_ANDA_DISINI") {
+                console.warn("GAS URL belum disetting, data tidak terkirim ke Sheets.");
+                return;
+            }
+            const payload = {
+                action: 'save_hasil',
+                nama: state.studentName,
+                kelas: state.studentClass,
+                kategori: kategori,
+                benar: benar,
+                salah: salah,
+                skor: skor,
+                detailJawaban: detailJawaban
+            };
+            
+            // Menggunakan fetch dengan Content-Type text/plain agar menghindari masalah CORS Preflight
+            fetch(GAS_URL, {
+                method: 'POST',
+                headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                body: JSON.stringify(payload)
+            }).then(res => res.json())
+              .then(data => console.log("Berhasil dikirim ke Sheets:", data))
+              .catch(err => console.error("Gagal mengirim data:", err));
+        }
+
+        function syncSoalToGAS() {
+            if(!GAS_URL || GAS_URL === "URL_GAS_ANDA_DISINI") return;
+            const payload = {
+                action: 'sync_soal',
+                bermain: bermainData,
+                berlatih: berlatihData
+            };
+            fetch(GAS_URL, {
+                method: 'POST',
+                headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                body: JSON.stringify(payload)
+            }).catch(e => console.error(e));
+        }
+
+        /* === CORE FUNCTIONS === */
+        function navigate(fromId, toId) {
+            document.getElementById(fromId).classList.add('hidden-screen');
+            document.getElementById(toId).classList.remove('hidden-screen');
+            window.scrollTo(0,0);
+        }
+
+        function showModal(title, desc, iconHTML = '<i class="fas fa-info-circle text-blue-500"></i>') {
+            document.getElementById('modal-title').innerText = title;
+            document.getElementById('modal-desc').innerHTML = desc;
+            document.getElementById('modal-icon').innerHTML = iconHTML;
+            const m = document.getElementById('global-modal');
+            m.classList.remove('hidden-screen');
+            setTimeout(() => { m.classList.remove('opacity-0'); m.querySelector('.glass').classList.remove('scale-95'); }, 10);
+        }
+
+        function closeModal() {
+            const m = document.getElementById('global-modal');
+            m.classList.add('opacity-0'); m.querySelector('.glass').classList.add('scale-95');
+            setTimeout(() => { m.classList.add('hidden-screen'); }, 300);
+        }
+
+        // Init App
+        window.onload = () => {
+            setTimeout(() => {
+                document.getElementById('splash-screen').classList.add('fade-out');
+                setTimeout(() => {
+                    navigate('splash-screen', 'cover-screen');
+                }, 500);
+            }, 2000);
+        };
+
+        // Cover Floating Slides
+        function showFloatingSlide(id) {
+            const el = document.getElementById('slide-' + id);
+            el.classList.remove('hidden-screen');
+            setTimeout(() => { el.classList.remove('opacity-0'); el.querySelector('.glass').classList.remove('scale-95'); }, 10);
+        }
+        function hideFloatingSlide(id) {
+            const el = document.getElementById('slide-' + id);
+            el.classList.add('opacity-0'); el.querySelector('.glass').classList.add('scale-95');
+            setTimeout(() => { el.classList.add('hidden-screen'); }, 300);
+        }
+
+        // Login Logic
+        function submitLogin() {
+            const name = document.getElementById('student-name').value.trim();
+            const cls = document.getElementById('student-class').value;
+            
+            if(!name || !cls) {
+                showModal("Data Tidak Lengkap", "Mohon isi Nama Lengkap dan Pilih Kelas sebelum melanjutkan.", '<i class="fas fa-exclamation-triangle text-amber-500"></i>');
+                return;
+            }
+            
+            state.studentName = name;
+            state.studentClass = cls;
+            
+            document.getElementById('display-name').innerText = name;
+            document.getElementById('menu-student-name').innerText = name;
+            document.getElementById('menu-student-class').innerText = cls;
+            document.getElementById('profile-initial').innerText = name.charAt(0).toUpperCase();
+            
+            // Trigger sinkronisasi soal ke Database
+            syncSoalToGAS();
+
+            navigate('login-screen', 'guide-screen');
+            initGuide();
+        }
+
+        // Guide Slider Logic
+        let currentGuide = 0;
+        function initGuide() {
+            updateGuideUI();
+        }
+        function moveGuide(step) {
+            currentGuide += step;
+            updateGuideUI();
+        }
+        function updateGuideUI() {
+            const slides = document.querySelectorAll('.guide-slide');
+            const dots = document.getElementById('guide-dots').children;
+            
+            slides.forEach((s, i) => {
+                s.style.transform = `translateX(${(i - currentGuide) * 100}%)`;
+            });
+            
+            Array.from(dots).forEach((d, i) => {
+                if(i === currentGuide) { d.classList.replace('bg-gray-300', 'bg-emerald-600'); }
+                else { d.classList.replace('bg-emerald-600', 'bg-gray-300'); }
+            });
+
+            document.getElementById('btn-guide-prev').disabled = currentGuide === 0;
+            document.getElementById('btn-guide-prev').classList.toggle('opacity-50', currentGuide === 0);
+            document.getElementById('btn-guide-prev').classList.toggle('cursor-not-allowed', currentGuide === 0);
+
+            if(currentGuide === 2) {
+                document.getElementById('btn-guide-next').classList.add('hidden');
+                document.getElementById('btn-guide-finish').classList.remove('hidden');
+                document.getElementById('btn-guide-finish').classList.add('slide-up');
+            } else {
+                document.getElementById('btn-guide-next').classList.remove('hidden');
+                document.getElementById('btn-guide-finish').classList.add('hidden');
+            }
+        }
+        function finishGuide() {
+            navigate('guide-screen', 'main-menu-screen');
+        }
+
+        /* === MENU LOGIC === */
+        function updateMenuStatus() {
+            if(state.isBelajarDone) {
+                const cb = document.getElementById('card-bermain');
+                cb.classList.remove('opacity-75', 'cursor-not-allowed', 'border-gray-400');
+                cb.classList.add('border-gold-500', 'hover:-translate-y-2', 'hover:shadow-xl');
+                document.getElementById('lock-bermain').classList.add('hidden');
+                document.getElementById('status-bermain').innerHTML = '<span class="text-green-600">Terbuka 🔓</span>';
+            }
+            if(state.isBermainDone) {
+                const cc = document.getElementById('card-berlatih');
+                cc.classList.remove('opacity-75', 'cursor-not-allowed', 'border-gray-400');
+                cc.classList.add('border-blue-500', 'hover:-translate-y-2', 'hover:shadow-xl');
+                document.getElementById('lock-berlatih').classList.add('hidden');
+                document.getElementById('status-berlatih').innerHTML = '<span class="text-green-600">Terbuka 🔓</span>';
+            }
+            if(state.scoreBerlatih.total > 0) {
+                document.getElementById('btn-show-report').classList.remove('hidden');
+            }
+        }
+
+        function openMenu(menu) {
+            if(menu === 'bermain' && !state.isBelajarDone) {
+                showModal("Menu Terkunci", "Silakan selesaikan menu <b>1. Belajar</b> terlebih dahulu.", '<i class="fas fa-lock text-gray-500"></i>');
+                return;
+            }
+            if(menu === 'berlatih' && !state.isBermainDone) {
+                showModal("Menu Terkunci", "Silakan selesaikan menu <b>2. Bermain</b> terlebih dahulu.", '<i class="fas fa-lock text-gray-500"></i>');
+                return;
+            }
+
+            if(menu === 'belajar') { 
+                state.materiIdx = 0; 
+                renderMateri(); 
+                navigate('main-menu-screen', 'belajar-screen'); 
+            }
+            if(menu === 'bermain') { 
+                state.bermainIdx = 0; 
+                state.scoreBermain = 0; 
+                state.userAnswersBermain = []; // Reset list jawaban
+                renderBermain(); 
+                navigate('main-menu-screen', 'bermain-screen'); 
+            }
+            if(menu === 'berlatih') { 
+                state.berlatihIdx = 0; 
+                state.scoreBerlatih = {l1:0, l2:0, l3:0, total:0}; 
+                state.berlatihBenar = 0; 
+                state.userAnswersBerlatih = []; // Reset list jawaban
+                renderBerlatih(); 
+                navigate('main-menu-screen', 'berlatih-screen'); 
+            }
+        }
+
+        function confirmExit(menu) {
+            navigate(menu + '-screen', 'main-menu-screen');
+            updateMenuStatus();
+        }
+
+        /* === BELAJAR LOGIC === */
+        let materiQuizPassed = false;
+        function renderMateri() {
+            const data = materiData[state.materiIdx];
+            materiQuizPassed = false;
+            
+            document.getElementById('materi-progress').innerText = `${state.materiIdx + 1}/6`;
+            
+            let html = `
+                <div class="bg-white rounded-2xl p-6 shadow mb-6 slide-up">
+                    <h3 class="text-2xl font-bold text-emerald-800 mb-4 border-b pb-2">${data.title}</h3>
+                    ${data.content}
+                </div>
+                <div class="bg-emerald-100 rounded-2xl p-6 shadow slide-up border border-emerald-300">
+                    <h4 class="font-bold text-emerald-800 mb-3"><i class="fas fa-tasks text-emerald-600 mr-2"></i>Kuis Pemahaman Cepat</h4>
+                    <p class="text-sm text-gray-700 mb-4 font-medium">${data.quiz.q}</p>
+                    <div class="space-y-2">
+                        ${data.quiz.options.map((opt, i) => `
+                            <button onclick="checkMateriQuiz(${i}, ${data.quiz.ans}, this)" class="w-full text-left bg-white border border-gray-300 hover:border-emerald-500 hover:bg-emerald-50 p-3 rounded-xl transition text-sm text-gray-700 btn-materi-opt">
+                                ${opt}
+                            </button>
+                        `).join('')}
+                    </div>
+                    <div id="materi-feedback" class="mt-3 text-sm font-bold hidden"></div>
+                </div>
+            `;
+            document.getElementById('belajar-content-area').innerHTML = html;
+            
+            const btnPrev = document.getElementById('btn-materi-prev');
+            const btnNext = document.getElementById('btn-materi-next');
+            
+            btnPrev.classList.toggle('invisible', state.materiIdx === 0);
+            
+            btnNext.disabled = true;
+            btnNext.classList.add('opacity-50', 'cursor-not-allowed');
+            btnNext.innerText = "Jawab Kuis Dulu";
+        }
+
+        function checkMateriQuiz(selected, correct, btnEl) {
+            if(materiQuizPassed) return; 
+            
+            const btns = document.querySelectorAll('.btn-materi-opt');
+            btns.forEach(b => b.classList.add('opacity-50', 'cursor-not-allowed'));
+            
+            const fb = document.getElementById('materi-feedback');
+            fb.classList.remove('hidden');
+            
+            if(selected === correct) {
+                btnEl.classList.replace('border-gray-300', 'border-green-500');
+                btnEl.classList.replace('bg-white', 'bg-green-100');
+                btnEl.classList.remove('opacity-50');
+                fb.innerHTML = '<i class="fas fa-check-circle text-green-600"></i> Benar! Silakan lanjut.';
+                fb.classList.add('text-green-600');
+                materiQuizPassed = true;
+                
+                const btnNext = document.getElementById('btn-materi-next');
+                btnNext.disabled = false;
+                btnNext.classList.remove('opacity-50', 'cursor-not-allowed');
+                btnNext.innerText = state.materiIdx === 5 ? "Selesai Belajar" : "Selanjutnya";
+            } else {
+                btnEl.classList.replace('border-gray-300', 'border-red-500');
+                btnEl.classList.replace('bg-white', 'bg-red-100');
+                fb.innerHTML = '<i class="fas fa-times-circle text-red-600"></i> Kurang tepat. Coba pahami lagi materinya (Pilih ulang).';
+                fb.classList.add('text-red-600');
+                
+                setTimeout(() => {
+                    btns.forEach(b => {
+                        b.className = "w-full text-left bg-white border border-gray-300 hover:border-emerald-500 hover:bg-emerald-50 p-3 rounded-xl transition text-sm text-gray-700 btn-materi-opt";
+                    });
+                    fb.classList.add('hidden');
+                    fb.classList.remove('text-red-600');
+                }, 1500);
+            }
+        }
+
+        function moveMateri(step) {
+            state.materiIdx += step;
+            if(state.materiIdx > 5) {
+                state.isBelajarDone = true;
+                updateMenuStatus();
+                showModal("Tahap Belajar Selesai! 🎉", "Luar biasa! Kamu telah menguasai materi. Menu <b>Bermain</b> sekarang terbuka.", '<i class="fas fa-award text-gold-500 text-5xl"></i>');
+                navigate('belajar-screen', 'main-menu-screen');
+            } else {
+                renderMateri();
+            }
+        }
+
+        /* === BERMAIN LOGIC === */
+        let bermainSelected = -1;
+        function renderBermain() {
+            const data = bermainData[state.bermainIdx];
+            bermainSelected = -1;
+            
+            document.getElementById('bermain-progress').innerText = `${state.bermainIdx + 1}/10`;
+            document.getElementById('bermain-score-display').innerText = state.scoreBermain;
+            
+            let html = `
+                <div class="bg-white rounded-2xl p-5 md:p-6 shadow-lg mb-6 slide-up">
+                    <div class="flex items-center gap-2 mb-3 text-emerald-700 font-bold text-sm bg-emerald-50 w-max px-3 py-1 rounded-full border border-emerald-200">
+                        <i class="fas fa-book-reader"></i> Stimulus Literasi
+                    </div>
+                    <p class="text-sm md:text-base text-gray-700 leading-relaxed text-justify indent-8">${data.stimulus}</p>
+                </div>
+                
+                <div class="bg-gradient-to-br from-gold-50 to-orange-50 rounded-2xl p-5 md:p-6 shadow-lg slide-up border border-gold-200">
+                    <h3 class="font-bold text-gray-800 mb-4 text-lg">${state.bermainIdx + 1}. ${data.q}</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                        ${data.options.map((opt, i) => `
+                            <button id="b-opt-${i}" onclick="selectBermainOpt(${i})" class="text-left bg-white border-2 border-gray-200 hover:border-gold-400 p-4 rounded-xl transition font-semibold text-gray-700 shadow-sm flex items-center gap-3">
+                                <div class="w-6 h-6 rounded-full border-2 border-gray-300 flex-shrink-0 flex items-center justify-center" id="b-check-${i}"></div>
+                                ${opt}
+                            </button>
+                        `).join('')}
+                    </div>
+                </div>
+            `;
+            document.getElementById('bermain-content-area').innerHTML = html;
+        }
+
+        function selectBermainOpt(idx) {
+            bermainSelected = idx;
+            const data = bermainData[state.bermainIdx];
+            for(let i=0; i<data.options.length; i++) {
+                const btn = document.getElementById(`b-opt-${i}`);
+                const check = document.getElementById(`b-check-${i}`);
+                if(i === idx) {
+                    btn.classList.add('border-gold-500', 'bg-gold-50');
+                    check.classList.add('border-gold-500', 'bg-gold-500');
+                    check.innerHTML = '<i class="fas fa-check text-white text-xs"></i>';
+                } else {
+                    btn.classList.remove('border-gold-500', 'bg-gold-50');
+                    check.classList.remove('border-gold-500', 'bg-gold-500');
+                    check.innerHTML = '';
+                }
+            }
+        }
+
+        function submitBermainAnswer() {
+            if(bermainSelected === -1) {
+                showModal("Perhatian", "Silakan pilih jawaban terlebih dahulu.", '<i class="fas fa-hand-pointer text-gray-500"></i>');
+                return;
+            }
+            
+            // Simpan detail jawaban siswa (ambil huruf A/B/C/D)
+            const data = bermainData[state.bermainIdx];
+            const ansText = data.options[bermainSelected];
+            const ansChar = ansText.charAt(0);
+            state.userAnswersBermain.push(ansChar);
+
+            const correct = data.ans;
+            if(bermainSelected === correct) {
+                state.scoreBermain += 10;
+                showModal("Benar! 🎉", "Hebat! Jawabanmu tepat.", '<i class="fas fa-check-circle text-green-500 text-5xl"></i>');
+            } else {
+                showModal("Kurang Tepat", "Jawaban yang benar adalah: <b>" + data.options[correct] + "</b>", '<i class="fas fa-times-circle text-red-500 text-5xl"></i>');
+            }
+            
+            setTimeout(() => {
+                state.bermainIdx++;
+                if(state.bermainIdx > 9) {
+                    state.isBermainDone = true;
+                    updateMenuStatus();
+                    
+                    // Kiriim Data Ke Google Sheets
+                    let jumlahBenar = state.scoreBermain / 10;
+                    let jumlahSalah = 10 - jumlahBenar;
+                    sendDataToGAS('Bermain', jumlahBenar, jumlahSalah, state.scoreBermain, state.userAnswersBermain);
+
+                    showModal("Tahap Bermain Selesai! 🏆", `Total Skormu: <b>${state.scoreBermain}</b>. Menu <b>Berlatih</b> telah terbuka!`, '<i class="fas fa-trophy text-gold-500 text-5xl"></i>');
+                    navigate('bermain-screen', 'main-menu-screen');
+                } else {
+                    renderBermain();
+                }
+            }, 1800);
+        }
+
+        /* === BERLATIH LOGIC === */
+        let berlatihSelected = -1;
+        function renderBerlatih() {
+            const data = berlatihData[state.berlatihIdx];
+            berlatihSelected = -1;
+            
+            document.getElementById('berlatih-progress').innerText = `${state.berlatihIdx + 1}/10`;
+            
+            let lvlColor = data.level === 1 ? 'green' : (data.level === 2 ? 'blue' : 'red');
+            let lvlText = data.level === 1 ? 'Level 1 (Dasar)' : (data.level === 2 ? 'Level 2 (Penerapan)' : 'Level 3 (HOTS)');
+            document.getElementById('berlatih-bobot').innerHTML = `Bobot: ${data.bobot} Poin | <span class="text-${lvlColor}-600 font-bold">${lvlText}</span>`;
+            
+            let html = `
+                <div class="bg-white rounded-2xl p-5 md:p-6 shadow-lg mb-6 slide-up border-t-4 border-${lvlColor}-500">
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="bg-gray-100 px-3 py-1 rounded-full text-xs font-bold text-gray-600"><i class="fas fa-file-alt"></i> Soal No. ${state.berlatihIdx + 1}</div>
+                        <div class="bg-${lvlColor}-100 text-${lvlColor}-700 px-3 py-1 rounded-full text-xs font-bold">${lvlText}</div>
+                    </div>
+                    <p class="text-sm md:text-base text-gray-700 leading-relaxed text-justify italic mb-4 bg-gray-50 p-4 rounded-lg border border-gray-200">"${data.stimulus}"</p>
+                    <h3 class="font-bold text-gray-900 mb-5 text-lg">${data.q}</h3>
+                    
+                    <div class="space-y-3">
+                        ${data.options.map((opt, i) => `
+                            <button id="l-opt-${i}" onclick="selectBerlatihOpt(${i})" class="w-full text-left bg-white border-2 border-gray-200 hover:border-blue-400 p-4 rounded-xl transition font-semibold text-gray-700 flex items-start gap-3">
+                                <div class="w-6 h-6 mt-0.5 rounded border-2 border-gray-300 flex-shrink-0 flex items-center justify-center" id="l-check-${i}"></div>
+                                <span>${opt}</span>
+                            </button>
+                        `).join('')}
+                    </div>
+                </div>
+            `;
+            document.getElementById('berlatih-content-area').innerHTML = html;
+        }
+
+        function selectBerlatihOpt(idx) {
+            berlatihSelected = idx;
+            const data = berlatihData[state.berlatihIdx];
+            for(let i=0; i<data.options.length; i++) {
+                const btn = document.getElementById(`l-opt-${i}`);
+                const check = document.getElementById(`l-check-${i}`);
+                if(i === idx) {
+                    btn.classList.add('border-blue-500', 'bg-blue-50');
+                    check.classList.add('border-blue-500', 'bg-blue-500');
+                    check.innerHTML = '<i class="fas fa-check text-white text-xs"></i>';
+                } else {
+                    btn.classList.remove('border-blue-500', 'bg-blue-50');
+                    check.classList.remove('border-blue-500', 'bg-blue-500');
+                    check.innerHTML = '';
+                }
+            }
+        }
+
+        function submitBerlatihAnswer() {
+            if(berlatihSelected === -1) {
+                showModal("Perhatian", "Silakan pilih jawaban terlebih dahulu.", '<i class="fas fa-hand-pointer text-gray-500"></i>');
+                return;
+            }
+            
+            // Simpan detail jawaban siswa
+            const data = berlatihData[state.berlatihIdx];
+            const ansText = data.options[berlatihSelected];
+            const ansChar = ansText.charAt(0);
+            state.userAnswersBerlatih.push(ansChar);
+
+            if(berlatihSelected === data.ans) {
+                state.berlatihBenar++;
+                state.scoreBerlatih.total += data.bobot;
+                if(data.level === 1) state.scoreBerlatih.l1 += 1;
+                if(data.level === 2) state.scoreBerlatih.l2 += 1;
+                if(data.level === 3) state.scoreBerlatih.l3 += 1;
+            }
+            
+            state.berlatihIdx++;
+            if(state.berlatihIdx > 9) {
+                updateMenuStatus();
+                
+                // Kirim Data Ke Google Sheets
+                let jumlahSalah = 10 - state.berlatihBenar;
+                sendDataToGAS('Berlatih', state.berlatihBenar, jumlahSalah, state.scoreBerlatih.total, state.userAnswersBerlatih);
+
+                showModal("Asesmen Selesai!", "Data telah disimpan. Silakan lihat Laporan Hasil Belajarmu.", '<i class="fas fa-file-signature text-blue-500 text-5xl"></i>');
+                navigate('berlatih-screen', 'main-menu-screen');
+                generateReportUI(); 
+            } else {
+                renderBerlatih();
+            }
+        }
+
+        /* === PDF REPORT LOGIC === */
+        function generateReportUI() {
+            // Fill Data
+            document.getElementById('rep-name').innerText = state.studentName;
+            document.getElementById('rep-class').innerText = state.studentClass;
+            const now = new Date();
+            const dateStr = `${now.getDate()} ${['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agt', 'Sep', 'Okt', 'Nov', 'Des'][now.getMonth()]} ${now.getFullYear()}`;
+            document.getElementById('rep-date').innerText = dateStr;
+            document.getElementById('rep-date-ttd').innerText = dateStr;
+            
+            document.getElementById('rep-bermain-score').innerText = state.scoreBermain;
+            document.getElementById('rep-berlatih-score').innerText = state.scoreBerlatih.total;
+            
+            let predikat = "";
+            let rek = "";
+            if(state.scoreBerlatih.total >= 90) { predikat = "Sangat Baik (A)"; rek = "Ananda memiliki penguasaan literasi dan HOTS yang sangat membanggakan. Terus pertahankan dan jadilah teladan yang berbudi bahasa luhur."; }
+            else if(state.scoreBerlatih.total >= 75) { predikat = "Baik (B)"; rek = "Pemahaman Ananda sudah baik. Perbanyak lagi membaca buku untuk memperkaya kosakata idiom."; }
+            else { predikat = "Perlu Bimbingan (C)"; rek = "Jangan menyerah. Mari kita pelajari kembali materi bersama-sama. Belajar adalah proses yang butuh kesabaran."; }
+            document.getElementById('rep-predikat').innerText = predikat;
+            document.getElementById('rep-rekomendasi').innerText = rek;
+            
+            // Stats (L1: 3 soal, L2: 4 soal, L3: 3 soal)
+            const l1Max = 3, l2Max = 4, l3Max = 3;
+            document.getElementById('rep-l1-benar').innerText = `${state.scoreBerlatih.l1} / ${l1Max}`;
+            document.getElementById('rep-l1-persen').innerText = Math.round((state.scoreBerlatih.l1/l1Max)*100) + '%';
+            
+            document.getElementById('rep-l2-benar').innerText = `${state.scoreBerlatih.l2} / ${l2Max}`;
+            document.getElementById('rep-l2-persen').innerText = Math.round((state.scoreBerlatih.l2/l2Max)*100) + '%';
+            
+            document.getElementById('rep-l3-benar').innerText = `${state.scoreBerlatih.l3} / ${l3Max}`;
+            document.getElementById('rep-l3-persen').innerText = Math.round((state.scoreBerlatih.l3/l3Max)*100) + '%';
+
+            navigate('main-menu-screen', 'report-screen');
+        }
+
+        function downloadPDF() {
+            const element = document.getElementById('pdf-content');
+            const opt = {
+                margin:       10,
+                filename:     `Laporan_Idiom_${state.studentName.replace(/\s+/g, '_')}.pdf`,
+                image:        { type: 'jpeg', quality: 0.98 },
+                html2canvas:  { scale: 2, useCORS: true },
+                jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
+            };
+
+            // Ensure html2pdf is loaded
+            if(typeof html2pdf !== 'undefined') {
+                const btn = document.querySelector('button[onclick="downloadPDF()"]');
+                const origText = btn.innerHTML;
+                btn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Memproses...';
+                btn.disabled = true;
+                
+                html2pdf().set(opt).from(element).save().then(() => {
+                    btn.innerHTML = origText;
+                    btn.disabled = false;
+                });
+            } else {
+                window.print(); // Fallback
+            }
+        }
+    </script>
+</body>
+</html>
